@@ -1,45 +1,34 @@
 const { GraphQLServer } = require('graphql-yoga')
+const { Prisma } = require('prisma-binding')
 
-let links = [
-  {
-    id: 'link-0',
-    url: 'www.howtographql.com',
-    description: 'Fullstack tutorial for GraphQL',
-  },
-  {
-    id: 'link-1',
-    url: 'gaspardbucher.com',
-    description: 'A guy',
-  },
-  {
-    id: 'link-2',
-    url: 'godlily.com',
-    description: 'A girl',
-  },
-]
-
-let idCount = links.length
-
-function findLink(id) {
-  return links.find((l) => l.id === id) || null
+function findLink(context, info, id) {
+  return context.db.query.links({ id }, info)
 }
 
 const resolvers = {
   Query: {
     info: () => `This is the API of a Hackernews Clone`,
-    feed: () => links,
-    link: (root, args) => findLink(args.id),
+    feed: (root, args, context, info) => {
+      // `info` contains the query AST so that the db
+      // knows what fields to return
+      return context.db.query.links({}, info)
+    },
+    link: (root, args, context, info) => {
+      return findLink(context, info, args.id)
+    },
   },
 
   Mutation: {
-    post(root, args) {
-      const link = {
-        id: `link-${idCount++}`,
-        description: args.description,
-        url: args.url,
-      }
-      links.push(link)
-      return link
+    post(root, args, context, info) {
+      return context.db.query.createLink(
+        {
+          data: {
+            url: args.url,
+            description: args.description,
+          },
+        },
+        info
+      )
     },
     updateLink(root, args) {
       const link = findLink(args.id)
@@ -74,5 +63,15 @@ const resolvers = {
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',
   resolvers,
+  context: (req) =>
+    Object.assign({}, req, {
+      db: new Prisma({
+        typeDefs: 'src/generated/prisma.graphql',
+        endPoint:
+          'https://eu1.prisma.sh/public-gravelhiss-219/hackernews-node/dev',
+        secret: '09asdfj20j',
+        debug: true,
+      }),
+    }),
 })
 server.start(() => console.log(`Server is running on http://localhost:4000`))
