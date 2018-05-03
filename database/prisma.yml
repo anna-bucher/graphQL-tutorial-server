@@ -1,0 +1,12 @@
+# Just something part of the endpoint name
+service: hackernews-node
+
+# Something else for the endpoint name
+stage: dev
+
+# Points to the file for our data model
+datamodel: datamodel.graphql
+
+# JWT signed with this secret (db access)
+secret: 09asdfj20j
+cluster: public-gravelhiss-219/prisma-eu1
