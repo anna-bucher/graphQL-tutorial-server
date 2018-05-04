@@ -1,4 +1,4 @@
-# import Post, PostSubscriptionPayload, User from "./generated/prisma.graphql"
+# import Post, PostSubscriptionPayload from "./generated/prisma.graphql"
 
 type Query {
   posts: [Post!]!
@@ -21,4 +21,11 @@ type AuthPayload {
 
 type Subscription {
   publications: PostSubscriptionPayload
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  posts: [Post!]
 }
