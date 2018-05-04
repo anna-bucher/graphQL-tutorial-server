@@ -1,9 +1,14 @@
-# import Post, PostSubscriptionPayload, Vote, VoteSubscriptionPayload from "./generated/prisma.graphql"
+# import Post, PostSubscriptionPayload, Vote, VoteSubscriptionPayload, PostOrderByInput from "./generated/prisma.graphql"
 
 type Query {
-  posts: [Post!]!
+  posts(filter: String, skip: Int, first: Int, orderBy: PostOrderByInput): Feed!
   user(id: ID!): User
   users: [User]!
+}
+
+type Feed {
+  posts: [Post!]!
+  count: Int!
 }
 
 type Mutation {
