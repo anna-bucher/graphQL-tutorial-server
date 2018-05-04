@@ -1,4 +1,4 @@
-# import Post, PostSubscriptionPayload from "./generated/prisma.graphql"
+# import Post, PostSubscriptionPayload, Vote, VoteSubscriptionPayload from "./generated/prisma.graphql"
 
 type Query {
   posts: [Post!]!
@@ -12,6 +12,8 @@ type Mutation {
   # Auth
   signup(email: String!, password: String!, name: String!): AuthPayload
   login(email: String!, password: String!): AuthPayload
+  # Voting
+  vote(postId: ID!): Vote
 }
 
 type AuthPayload {
@@ -21,6 +23,8 @@ type AuthPayload {
 
 type Subscription {
   publications: PostSubscriptionPayload
+  newPost: PostSubscriptionPayload
+  newVote: VoteSubscriptionPayload
 }
 
 type User {

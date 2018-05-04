@@ -2,6 +2,7 @@ type Post {
   id: ID! @unique
   author: User
   title: String!
+  votes: [Vote!]!
 }
 
 type User {
@@ -10,4 +11,11 @@ type User {
   email: String! @unique
   password: String!
   posts: [Post!]!
+  votes: [Vote!]!
+}
+
+type Vote {
+  id: ID! @unique
+  post: Post!
+  user: User!
 }

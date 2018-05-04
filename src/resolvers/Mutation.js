@@ -11,7 +11,7 @@ function writePost(parent, { title }, ctx, info) {
         author: { connect: { id: userId } },
       },
     },
-    info,
+    info
   )
 }
 
@@ -28,7 +28,7 @@ function updateTitle(parent, { id, newTitle }, ctx, info) {
         // editor: { connect: { id: userId } }
       },
     },
-    info,
+    info
   )
 }
 
@@ -38,7 +38,7 @@ async function signup(parent, args, ctx, info) {
     {
       data: { ...args, password },
     },
-    `{ id }`,
+    `{ id }`
   )
   const token = jwt.sign({ userId: user.id }, APP_SECRET)
 
@@ -54,7 +54,7 @@ async function signup(parent, args, ctx, info) {
 async function login(parent, args, ctx, info) {
   const user = await ctx.db.query.user(
     { where: { email: args.email } },
-    `{ id password }`,
+    `{ id password }`
   )
   if (!user) {
     console.log(`Login: user with email '${args.email}' not found.`)
@@ -74,9 +74,32 @@ async function login(parent, args, ctx, info) {
   }
 }
 
+async function vote(parent, args, ctx, info) {
+  const userId = getUserId(ctx)
+
+  const voteExists = await ctx.db.exists.Vote({
+    user: { id: userId },
+    post: { id: args.postId },
+  })
+  if (voteExists) {
+    throw new Error(`Already voted for link: ${args.postId}`)
+  }
+
+  return ctx.db.mutation.createVote(
+    {
+      data: {
+        user: { connect: { id: userId } },
+        post: { connect: { id: args.postId } },
+      },
+    },
+    info
+  )
+}
+
 module.exports = {
   signup,
   login,
   writePost,
   updateTitle,
+  vote,
 }

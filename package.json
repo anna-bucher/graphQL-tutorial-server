@@ -12,16 +12,11 @@
     "graphql-import": "0.4.1",
     "graphql-yoga": "1.2.0",
     "jsonwebtoken": "^8.2.1",
-    "prisma-binding": "1.4.0"
+    "prisma-binding": "^1.5.18"
   },
   "devDependencies": {
     "graphql-cli": "2.12.4",
     "npm-run-all": "4.1.2",
-    "prisma": "1.0.8"
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "all"
+    "prisma": "1.7.0"
   }
 }
