@@ -1,45 +1,6 @@
 const { GraphQLServer } = require('graphql-yoga')
 const { Prisma } = require('prisma-binding')
-
-const resolvers = {
-  Query: {
-    feed(parent, args, ctx, info) {
-      return ctx.db.query.posts({}, info)
-    },
-  },
-  Mutation: {
-    writePost(parent, { title }, ctx, info) {
-      return ctx.db.mutation.createPost(
-        {
-          data: {
-            title,
-          },
-        },
-        info,
-      )
-    },
-    updateTitle(parent, { id, newTitle }, ctx, info) {
-      return ctx.db.mutation.updatePost(
-        {
-          where: {
-            id,
-          },
-          data: {
-            title: newTitle,
-          },
-        },
-        info,
-      )
-    },
-  },
-  Subscription: {
-    publications: {
-      subscribe: async (parent, args, ctx, info) => {
-        return ctx.db.subscription.post({}, info)
-      },
-    },
-  },
-}
+const resolvers = require('./resolvers')
 
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',
